@@ -7,9 +7,10 @@
     <style>
         body { font-family: Arial, sans-serif; }
         #container { width: 600px; margin: 50px auto; padding: 20px; border: 3px solid #333; border-radius: 10px; }
-        textarea, input { width: 100%; margin: 10px 0; font-size: 20px; padding: 10px; }
-        button { margin-top: 10px; padding: 12px 24px; font-size: 18px; }
-        #savedData { margin-top: 20px; font-size: 24px; }
+        textarea { width: calc(100% - 20px); height: 200px; margin: 10px 0; font-size: 18px; padding: 10px; }
+        button { padding: 10px 20px; font-size: 16px; }
+        #dataSection { margin-top: 20px; }
+        #actionButtons { margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -17,20 +18,18 @@
         <input type="password" id="password" placeholder="Enter password" style="font-size: 20px;">
         <button onclick="authenticate()" style="font-size: 18px;">Login</button>
         <div id="dataSection" style="display: none;">
-            <textarea id="data" rows="12"></textarea><br>
-            <button onclick="refreshData()">Refresh</button>
-            <button onclick="saveData()">Save</button>
-            <input type="file" id="fileUpload" accept=".xlsx,.xls,.doc,.docx,.pdf">
-            <button onclick="uploadFile()">Upload</button>
-            <button onclick="downloadFile()">Download</button>
+            <textarea id="data"></textarea><br>
             <div id="savedData"></div>
         </div>
     </div>
     <script>
         function authenticate() {
             const password = document.getElementById('password').value;
-            // Replace with actual password check
+            // Replace with new password "Aksh@1880"
             if (password === 'Aksh@1880') {
+                document.getElementById('password').value = '';
+                document.getElementById('container').removeChild(document.getElementById('passwordBox'));
+                document.getElementById('container').removeChild(document.getElementById('loginButton'));
                 document.getElementById('dataSection').style.display = 'block';
             } else {
                 alert('Incorrect password. Access denied.');
@@ -72,7 +71,7 @@
 
         // Load saved data on page load (for demo purposes)
         window.onload = () => {
-            loadData();
+            document.getElementById('password').focus(); // Focus on password field on load
         };
     </script>
 </body>
