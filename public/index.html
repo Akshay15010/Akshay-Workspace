@@ -18,6 +18,13 @@
         <input type="password" id="password" placeholder="Enter password" style="font-size: 20px;">
         <button onclick="authenticate()" style="font-size: 18px;">Login</button>
         <div id="dataSection" style="display: none;">
+            <div id="actionButtons">
+                <button onclick="refreshData()">Refresh</button>
+                <button onclick="saveData()">Save</button>
+                <input type="file" id="fileUpload" accept=".xlsx,.xls,.doc,.docx,.pdf">
+                <button onclick="uploadFile()">Upload</button>
+                <button onclick="downloadFile()">Download</button>
+            </div>
             <textarea id="data"></textarea><br>
             <div id="savedData"></div>
         </div>
@@ -25,11 +32,16 @@
     <script>
         function authenticate() {
             const password = document.getElementById('password').value;
-            // Replace with new password "Aksh@1880"
+            // Replace with correct password "Aksh@1880"
             if (password === 'Aksh@1880') {
+                // Clear password field
                 document.getElementById('password').value = '';
-                document.getElementById('container').removeChild(document.getElementById('passwordBox'));
-                document.getElementById('container').removeChild(document.getElementById('loginButton'));
+                // Remove password input and login button
+                const passwordInput = document.getElementById('password');
+                const loginButton = document.querySelector('button');
+                passwordInput.parentNode.removeChild(passwordInput);
+                loginButton.parentNode.removeChild(loginButton);
+                // Show data section
                 document.getElementById('dataSection').style.display = 'block';
             } else {
                 alert('Incorrect password. Access denied.');
