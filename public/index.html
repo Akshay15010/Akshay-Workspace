@@ -3,40 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Web Page</title>
+    <title>Secure Data Storage</title>
     <style>
         body { font-family: Arial, sans-serif; }
-        #container { width: 300px; margin: 100px auto; }
-        textarea, input { width: 100%; margin: 10px 0; }
+        #container { width: 600px; margin: 50px auto; padding: 20px; border: 3px solid #333; border-radius: 10px; }
+        textarea, input { width: 100%; margin: 10px 0; font-size: 20px; padding: 10px; }
+        button { margin-top: 10px; padding: 12px 24px; font-size: 18px; }
+        #savedData { margin-top: 20px; font-size: 24px; }
     </style>
 </head>
 <body>
     <div id="container">
-        <h2>Save Your Data</h2>
-        <textarea id="data" rows="4"></textarea>
-        <button onclick="saveData()">Save Data</button>
-        <h2>Saved Data</h2>
-        <div id="savedData"></div>
+        <input type="password" id="password" placeholder="Enter password" style="font-size: 20px;">
+        <button onclick="authenticate()" style="font-size: 18px;">Login</button>
+        <div id="dataSection" style="display: none;">
+            <textarea id="data" rows="12"></textarea><br>
+            <button onclick="refreshData()">Refresh</button>
+            <button onclick="saveData()">Save</button>
+            <input type="file" id="fileUpload" accept=".xlsx,.xls,.doc,.docx,.pdf">
+            <button onclick="uploadFile()">Upload</button>
+            <button onclick="downloadFile()">Download</button>
+            <div id="savedData"></div>
+        </div>
     </div>
     <script>
-        async function saveData() {
+        function authenticate() {
+            const password = document.getElementById('password').value;
+            // Replace with actual password check
+            if (password === 'Aksh@1880') {
+                document.getElementById('dataSection').style.display = 'block';
+            } else {
+                alert('Incorrect password. Access denied.');
+            }
+        }
+
+        function refreshData() {
+            // Implement refresh functionality
+            loadData();  // Placeholder for demo
+        }
+
+        function saveData() {
             const data = document.getElementById('data').value;
-            await fetch('/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data })
-            });
+            // Implement save functionality
+            // Example: send data to server or localStorage
+            document.getElementById('savedData').innerText = data;
+        }
+
+        function uploadFile() {
+            const file = document.getElementById('fileUpload').files[0];
+            // Implement file upload functionality
+            // Example: send file to server or process locally
+            console.log('Uploaded file:', file.name);
+        }
+
+        function downloadFile() {
+            // Implement file download functionality
+            // Example: fetch file from server or generate a download link
+            console.log('Downloading file...');
+        }
+
+        function loadData() {
+            // Implement loading saved data functionality
+            // Example: fetch data from server or localStorage
+            const savedData = '';  // Placeholder for demo
+            document.getElementById('data').value = savedData;
+            document.getElementById('savedData').innerText = savedData;
+        }
+
+        // Load saved data on page load (for demo purposes)
+        window.onload = () => {
             loadData();
-        }
-
-        async function loadData() {
-            const response = await fetch('/data');
-            const result = await response.json();
-            document.getElementById('savedData').innerText = result.data;
-        }
-
-        // Load saved data on page load
-        window.onload = loadData;
+        };
     </script>
 </body>
 </html>
