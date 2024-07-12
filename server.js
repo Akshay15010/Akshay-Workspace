@@ -1,31 +1,31 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const path = require('path');
-
+const fs = require('fs');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 10000;
+const bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(express.static('public'));
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-let savedData = '';
-
-app.post('/save', (req, res) => {
-    savedData = req.body.data;
-    res.send('Data saved!');
+app.post('/saveData', (req, res) => {
+    const data = req.body.data;
+    fs.writeFile('data.txt', data, (err) => {
+        if (err) {
+            res.status(500).send('Error saving data');
+        } else {
+            res.send('Data saved successfully');
+        }
+    });
 });
 
-app.get('/data', (req, res) => {
-    res.json({ data: savedData });
-});
-
-// Serve index.html for all other routes
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/loadData', (req, res) => {
+    fs.readFile('data.txt', 'utf8', (err, data) => {
+        if (err) {
+            res.status(500).send('Error loading data');
+        } else {
+            res.json({ data });
+        }
+    });
 });
 
 app.listen(port, () => {
