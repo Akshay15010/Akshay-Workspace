@@ -1,89 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Data Storage</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #container { width: 600px; margin: 50px auto; padding: 20px; border: 3px solid #333; border-radius: 10px; }
-        textarea { width: calc(100% - 20px); height: 600px; margin: 10px 0; font-size: 24px; padding: 10px; border: 3px solid #333; }
-        button { padding: 10px 20px; font-size: 18px; }
-        #dataSection { margin-top: 20px; }
-        #actionButtons { margin-bottom: 10px; }
-    </style>
-</head>
-<body>
-    <div id="container">
-        <input type="password" id="password" placeholder="Enter password" style="font-size: 20px;">
-        <button onclick="authenticate()" style="font-size: 18px;">Login</button>
-        <div id="dataSection" style="display: none;">
-            <div id="actionButtons">
-                <button onclick="refreshData()">Refresh</button>
-                <button onclick="saveData()">Save</button>
-                <input type="file" id="fileUpload" accept=".xlsx,.xls,.doc,.docx,.pdf">
-                <button onclick="uploadFile()">Upload</button>
-                <button onclick="downloadFile()">Download</button>
-            </div>
-            <textarea id="data" spellcheck="false"></textarea><br>
-        </div>
-    </div>
-    <script>
-        function authenticate() {
-            const password = document.getElementById('password').value;
-            // Replace with correct password "Aksh@1880"
-            if (password === 'Aksh@1880') {
-                // Clear password field
-                document.getElementById('password').value = '';
-                // Remove password input and login button
-                const passwordInput = document.getElementById('password');
-                const loginButton = document.querySelector('button');
-                passwordInput.parentNode.removeChild(passwordInput);
-                loginButton.parentNode.removeChild(loginButton);
-                // Show data section
-                document.getElementById('dataSection').style.display = 'block';
-            } else {
-                alert('Incorrect password. Access denied.');
-            }
-        }
+const express = require('express');
+const fs = require('fs');
+const app = express();
+const port = process.env.PORT || 10000;
+const bodyParser = require('body-parser');
 
-        function refreshData() {
-            // Implement refresh functionality
-            loadData();  // Placeholder for demo
-        }
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
-        function saveData() {
-            const data = document.getElementById('data').value;
-            // Implement save functionality
-            // Example: send data to server or localStorage
-            localStorage.setItem('savedData', data);
+app.post('/saveData', (req, res) => {
+    const data = req.body.data;
+    fs.writeFile('data.txt', data, (err) => {
+        if (err) {
+            res.status(500).send('Error saving data');
+        } else {
+            res.send('Data saved successfully');
         }
+    });
+});
 
-        function uploadFile() {
-            const file = document.getElementById('fileUpload').files[0];
-            // Implement file upload functionality
-            // Example: send file to server or process locally
-            console.log('Uploaded file:', file.name);
+app.get('/loadData', (req, res) => {
+    fs.readFile('data.txt', 'utf8', (err, data) => {
+        if (err) {
+            res.status(500).send('Error loading data');
+        } else {
+            res.json({ data });
         }
+    });
+});
 
-        function downloadFile() {
-            // Implement file download functionality
-            // Example: fetch file from server or generate a download link
-            console.log('Downloading file...');
-        }
-
-        function loadData() {
-            // Implement loading saved data functionality
-            // Example: fetch data from server or localStorage
-            const savedData = localStorage.getItem('savedData') || '';  // Placeholder for demo
-            document.getElementById('data').value = savedData;
-        }
-
-        // Load saved data on page load (for demo purposes)
-        window.onload = () => {
-            document.getElementById('password').focus(); // Focus on password field on load
-            loadData(); // Load saved data
-        };
-    </script>
-</body>
-</html>
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
