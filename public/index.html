@@ -6,22 +6,83 @@
     <title>Secure Data Storage</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        body { font-family: Arial, sans-serif; }
-        #container { width: 800px; margin: 50px auto; padding: 20px; border: 3px solid #333; border-radius: 10px; }
-        textarea { width: calc(100% - 20px); height: 400px; margin: 10px 0; font-size: 24px; padding: 10px; border: 3px solid #333; }
-        button { padding: 10px 20px; font-size: 18px; }
-        #dataSection { margin-top: 20px; }
-        .panel-heading { display: flex; justify-content: space-between; align-items: center; }
-        .panel-title { display: flex; align-items: center; font-size: 24px; }
-        .panel-actions { display: flex; gap: 10px; }
-        .savr-loading div { display: inline-block; width: 10px; height: 10px; margin: 3px; border-radius: 100%; background: #333; animation: sk-bouncedelay 1.4s infinite ease-in-out both; }
-        .savr-loading div:nth-child(1) { animation-delay: -0.32s; }
-        .savr-loading div:nth-child(2) { animation-delay: -0.16s; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #000;
+        }
+        #container {
+            width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 3px solid #333;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+        textarea {
+            width: calc(100% - 20px);
+            height: 400px;
+            margin: 10px 0;
+            font-size: 24px;
+            padding: 10px;
+            border: 3px solid #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        #dataSection {
+            margin-top: 20px;
+        }
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-title {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+        }
+        .panel-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .savr-loading div {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin: 3px;
+            border-radius: 100%;
+            background: #333;
+            animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+        }
+        .savr-loading div:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        .savr-loading div:nth-child(2) {
+            animation-delay: -0.16s;
+        }
         @keyframes sk-bouncedelay {
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1.0); }
         }
-        #fileUpload { display: none; }
+        #fileUpload {
+            display: none;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .dark-mode #container {
+            background-color: #1e1e1e;
+            border: 3px solid #555;
+        }
+        .dark-mode textarea {
+            background-color: #333;
+            color: #e0e0e0;
+            border: 3px solid #555;
+        }
     </style>
 </head>
 <body>
@@ -86,9 +147,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ data })
-            }).then(response => response.text())
-              .then(result => alert(result))
-              .catch(error => console.error('Error saving data:', error));
+            }).catch(error => console.error('Error saving data:', error));
         }
 
         function uploadFile() {
