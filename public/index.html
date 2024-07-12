@@ -1,33 +1,84 @@
-const express = require('express');
-const fs = require('fs');
-const app = express();
-const port = process.env.PORT || 10000;
-const bodyParser = require('body-parser');
-
-app.use(bodyParser.json());
-app.use(express.static('public'));
-
-app.post('/saveData', (req, res) => {
-    const data = req.body.data;
-    fs.writeFile('data.txt', data, (err) => {
-        if (err) {
-            res.status(500).send('Error saving data');
-        } else {
-            res.send('Data saved successfully');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Data Storage</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #container { width: 600px; margin: 50px auto; padding: 20px; border: 3px solid #333; border-radius: 10px; }
+        textarea { width: calc(100% - 20px); height: 300px; margin: 10px 0; font-size: 24px; padding: 10px; border: 3px solid #333; }
+        button { padding: 10px 20px; font-size: 18px; }
+        #dataSection { margin-top: 20px; }
+        #actionButtons { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <input type="password" id="password" placeholder="Enter password" style="font-size: 20px;">
+        <button onclick="authenticate()" style="font-size: 18px;">Login</button>
+        <div id="dataSection" style="display: none;">
+            <div id="actionButtons">
+                <button onclick="refreshData()">Refresh</button>
+                <button onclick="saveData()">Save</button>
+                <input type="file" id="fileUpload" accept=".xlsx,.xls,.doc,.docx,.pdf">
+                <button onclick="uploadFile()">Upload</button>
+                <button onclick="downloadFile()">Download</button>
+            </div>
+            <textarea id="data" spellcheck="false"></textarea>
+        </div>
+    </div>
+    <script>
+        function authenticate() {
+            const password = document.getElementById('password').value;
+            if (password === 'Aksh@1880') {
+                document.getElementById('password').style.display = 'none';
+                document.querySelector('button').style.display = 'none';
+                document.getElementById('dataSection').style.display = 'block';
+                loadData();
+            } else {
+                alert('Incorrect password. Access denied.');
+            }
         }
-    });
-});
 
-app.get('/loadData', (req, res) => {
-    fs.readFile('data.txt', 'utf8', (err, data) => {
-        if (err) {
-            res.status(500).send('Error loading data');
-        } else {
-            res.json({ data });
+        function refreshData() {
+            loadData();
         }
-    });
-});
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+        function saveData() {
+            const data = document.getElementById('data').value;
+            fetch('/saveData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ data })
+            }).then(response => response.text())
+              .then(result => alert(result))
+              .catch(error => console.error('Error saving data:', error));
+        }
+
+        function uploadFile() {
+            const file = document.getElementById('fileUpload').files[0];
+            console.log('Uploaded file:', file.name);
+        }
+
+        function downloadFile() {
+            console.log('Downloading file...');
+        }
+
+        function loadData() {
+            fetch('/loadData')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('data').value = data.data;
+                })
+                .catch(error => console.error('Error loading data:', error));
+        }
+
+        window.onload = () => {
+            document.getElementById('password').focus();
+        };
+    </script>
+</body>
+</html>
