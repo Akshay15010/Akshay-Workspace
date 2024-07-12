@@ -4,13 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Data Storage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body { font-family: Arial, sans-serif; }
         #container { width: 600px; margin: 50px auto; padding: 20px; border: 3px solid #333; border-radius: 10px; }
         textarea { width: calc(100% - 20px); height: 300px; margin: 10px 0; font-size: 24px; padding: 10px; border: 3px solid #333; }
         button { padding: 10px 20px; font-size: 18px; }
         #dataSection { margin-top: 20px; }
-        #actionButtons { margin-bottom: 10px; }
+        .panel-heading { display: flex; justify-content: space-between; align-items: center; }
+        .panel-title { display: flex; align-items: center; font-size: 24px; }
+        .panel-actions { display: flex; gap: 10px; }
+        .savr-loading div { display: inline-block; width: 10px; height: 10px; margin: 3px; border-radius: 100%; background: #333; animation: sk-bouncedelay 1.4s infinite ease-in-out both; }
+        .savr-loading div:nth-child(1) { animation-delay: -0.32s; }
+        .savr-loading div:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes sk-bouncedelay {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
     </style>
 </head>
 <body>
@@ -18,12 +28,45 @@
         <input type="password" id="password" placeholder="Enter password" style="font-size: 20px;">
         <button onclick="authenticate()" style="font-size: 18px;">Login</button>
         <div id="dataSection" style="display: none;">
-            <div id="actionButtons">
-                <button onclick="refreshData()">Refresh</button>
-                <button onclick="saveData()">Save</button>
-                <input type="file" id="fileUpload" accept=".xlsx,.xls,.doc,.docx,.pdf">
-                <button onclick="uploadFile()">Upload</button>
-                <button onclick="downloadFile()">Download</button>
+            <div class="panel-heading">
+                <h1 class="panel-title padding-left-0 padding-right-20">
+                    <span class="hidden-xs margin-right-10">Start Typing!</span>
+                    <div id="loading" style="display: none" class="savr-loading css3-spinner-ball-pulse-sync">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <span id="saved" data-toggle="tooltip" data-placement="right" title="Saved.">
+                        <i class="fa fa-check font-size-20 savr-saved"></i>
+                    </span>
+                    <span id="error" data-toggle="tooltip" data-placement="right" title="An unknown error occurred. Sometimes, refreshing this page can fix it.">
+                        <i class="fa fa-times font-size-20 savr-error" style="display: none"></i>
+                    </span>
+                </h1>
+                <div class="panel-actions right-0">
+                    <button id="copy-savr" data-clipboard-target="#data" class="btn btn-outline btn-default" title="Copy">
+                        <i class="fa fa-copy"></i>
+                        <span class="hidden-xs"> Copy</span>
+                    </button>
+                    <button id="show-url-list-button" class="btn btn-outline btn-default collapsed" title="Links">
+                        <i class="fa fa-link"></i>
+                        <span class="hidden-xs"> Links</span>
+                    </button>
+                    <button title="Upload" class="btn btn-outline btn-default">
+                        <i class="fa fa-upload"></i>
+                        <span class="hidden-xs"> Upload</span>
+                        <input type="file" id="fileUpload" accept=".xlsx,.xls,.doc,.docx,.pdf" style="display: none;">
+                    </button>
+                    <button title="Download" class="btn btn-outline btn-default" onclick="downloadFile()">
+                        <i class="fa fa-download"></i>
+                        <span class="hidden-xs"> Download</span>
+                    </button>
+                    <button id="dark-mode-toggle" title="Dark Mode" class="btn btn-outline btn-default">
+                        <i id="dark-mode-icon" class="fa fa-toggle-off"></i>
+                        <span class="hidden-xs"> Dark Mode</span>
+                    </button>
+                    <button id="savr-refresh-button" title="Refresh Savr" class="panel-action fa fa-repeat" onclick="refreshData()"></button>
+                </div>
             </div>
             <textarea id="data" spellcheck="false"></textarea>
         </div>
@@ -79,6 +122,8 @@
         window.onload = () => {
             document.getElementById('password').focus();
         };
+
+        document.getElementById('fileUpload').addEventListener('change', uploadFile);
     </script>
 </body>
 </html>
