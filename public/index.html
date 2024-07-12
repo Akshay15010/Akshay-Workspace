@@ -7,11 +7,10 @@
     <style>
         body { font-family: Arial, sans-serif; }
         #container { width: 600px; margin: 50px auto; padding: 20px; border: 3px solid #333; border-radius: 10px; }
-        textarea { width: calc(100% - 20px); height: 200px; margin: 10px 0; font-size: 18px; padding: 10px; }
-        button { padding: 10px 20px; font-size: 16px; }
+        textarea { width: calc(100% - 20px); height: 600px; margin: 10px 0; font-size: 24px; padding: 10px; border: 3px solid #333; }
+        button { padding: 10px 20px; font-size: 18px; }
         #dataSection { margin-top: 20px; }
         #actionButtons { margin-bottom: 10px; }
-        #savedData { margin-top: 10px; font-size: 18px; white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -26,8 +25,7 @@
                 <button onclick="uploadFile()">Upload</button>
                 <button onclick="downloadFile()">Download</button>
             </div>
-            <textarea id="data"></textarea><br>
-            <div id="savedData"></div>
+            <textarea id="data" spellcheck="false"></textarea><br>
         </div>
     </div>
     <script>
@@ -58,7 +56,7 @@
             const data = document.getElementById('data').value;
             // Implement save functionality
             // Example: send data to server or localStorage
-            document.getElementById('savedData').innerText = data;
+            localStorage.setItem('savedData', data);
         }
 
         function uploadFile() {
@@ -77,14 +75,14 @@
         function loadData() {
             // Implement loading saved data functionality
             // Example: fetch data from server or localStorage
-            const savedData = '';  // Placeholder for demo
+            const savedData = localStorage.getItem('savedData') || '';  // Placeholder for demo
             document.getElementById('data').value = savedData;
-            document.getElementById('savedData').innerText = savedData;
         }
 
         // Load saved data on page load (for demo purposes)
         window.onload = () => {
             document.getElementById('password').focus(); // Focus on password field on load
+            loadData(); // Load saved data
         };
     </script>
 </body>
