@@ -157,12 +157,10 @@
             const file = document.getElementById('fileUpload').files[0];
             const formData = new FormData();
             formData.append('file', file);
-
-            fetch('/upload', {
+            fetch('/uploadFile', {
                 method: 'POST',
                 body: formData
-            })
-            .then(response => response.text())
+            }).then(response => response.text())
             .then(data => {
                 document.getElementById('data').value = data;
             })
@@ -170,16 +168,20 @@
         }
 
         function downloadFile() {
-            const data = document.getElementById('data').value;
-            const blob = new Blob([data], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'data.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            const fileName = 'data.txt';
+            fetch(`/downloadFile?fileName=${fileName}`)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error downloading file:', error));
         }
 
         function loadData() {
